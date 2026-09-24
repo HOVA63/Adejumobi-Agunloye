@@ -1,0 +1,152 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: 'Oswald', sans-serif;
+}
+
+a {
+    text-decoration: none;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+svg {
+    height: 36px;
+}
+
+.shell {
+    width: 100%;
+}
+
+.header-shell {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: white;
+}
+
+.header-limit {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding: 2rem 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    font-size: 1.05rem;
+}
+
+.nav-list {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 1.5rem;
+    margin-inline: auto;
+}
+
+.nav-link {
+    padding-block: 0.5rem;
+    position: relative;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 1.5rem;
+    height: 3px;
+    background-color: purple;
+    opacity: 0;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.nav-link:hover::after,
+.nav-link:focus-visible::after,
+.nav-link[aria-current="page"]::after {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+.main-limit {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding: 0;
+}
+
+.home-about {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+    gap: 2rem;
+    font-family: 'Barlow', sans-serif;
+}
+
+.home-about img {
+    height: 700px;
+    width: auto;
+}
+
+.book-section {
+    margin-block: 5rem;
+}
+
+.book-section div, .book-section h1 {
+    display: flex;
+    justify-content: center;
+    font-weight: 400;
+}
+
+.books-layout img {
+    height: 456px;
+    width: 275px;
+}
+
+.books-layout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+footer {
+    background-color: black;
+    color: white;
+    height: 418px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+footer .limit {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.social-media_links {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+}
+
+.img a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
