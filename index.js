@@ -9,6 +9,8 @@ const themeToggle = document.querySelector("[data-theme-toggle]");
 if (themeToggle) {
     const updateThemeLabel = () => {
         const isDark = document.documentElement.dataset.theme === "dark";
+        const label = themeToggle.querySelector(".theme-toggle-label");
+        label.textContent = isDark ? "Dark" : "Light";
         themeToggle.setAttribute("aria-label", `Switch to ${isDark ? "light" : "dark"} mode`);
         themeToggle.setAttribute("title", `Switch to ${isDark ? "light" : "dark"} mode`);
     };
