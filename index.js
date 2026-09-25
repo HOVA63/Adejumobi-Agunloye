@@ -4,6 +4,17 @@ const initialTheme = savedTheme || (prefersDark ? "dark" : "light");
 
 document.documentElement.dataset.theme = initialTheme;
 
+document.querySelectorAll(".menu-toggle").forEach(menuToggle => {
+    const navigation = menuToggle.closest(".header-limit");
+
+    menuToggle.addEventListener("click", () => {
+        const isExpanded = menuToggle.getAttribute("aria-expanded") === "true";
+        menuToggle.setAttribute("aria-expanded", String(!isExpanded));
+        menuToggle.setAttribute("aria-label", isExpanded ? "Open navigation menu" : "Close navigation menu");
+        navigation.classList.toggle("menu-open", !isExpanded);
+    });
+});
+
 const themeToggle = document.querySelector("[data-theme-toggle]");
 
 if (themeToggle) {
