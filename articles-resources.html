@@ -3,7 +3,8 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>About</title>
+        <title>Articles and Resources</title>
+        <script src="index.js" defer></script>
         <link rel="stylesheet" href="css/styles.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,7 +12,6 @@
     </head>
     <body>
        <header class="shell header-shell">
-        <script src="index.js" defer></script>
             <nav class="header-limit">
                 <button class="menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="site-navigation">
                     <span></span>
@@ -22,7 +22,7 @@
                 <ul class="nav-list" id="site-navigation">
                     <li><a href="index.html" class="nav-link">HOME</a></li>
                     <li><a href="about.html" class="nav-link">ABOUT</a></li>
-                    <li><a href="articles-resources.html" class="nav-link">ARTICLES AND RESOURCES</a></li>
+                    <li><a href="articles-resources.html" class="nav-link" aria-current="page">ARTICLES AND RESOURCES</a></li>
                     <li><a href="projects.html" class="nav-link">PROJECTS</a></li>
                     <li><a href="books.html" class="nav-link">BOOKS</a></li>
                     <li><a href="contact.html" class="nav-link">CONTACT</a></li>
@@ -36,7 +36,9 @@
         </button>
 
         <main class="shell main-shell">
-            <div class="main-limit article-limit"></div>
+            <div class="main-limit article-limit">
+                <div class="projects">COMING SOON</div>
+            </div>
         </main>
 
         <footer class="shell">
