@@ -1,36 +1,17 @@
-const savedTheme = localStorage.getItem("theme");
+let savedTheme;
+try {
+    savedTheme = localStorage.getItem("theme");
+} catch {}
 const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
 const initialTheme = savedTheme || (prefersDark ? "dark" : "light");
 
 document.documentElement.dataset.theme = initialTheme;
 
 const siteHeader = document.querySelector(".header-shell");
+const birthdayCarousel = document.querySelector(".birthday-carousel");
+const track = document.querySelector("[data-birthday-carousel-track]");
 
-if (siteHeader) {
-    const birthdayCarousel = document.createElement("div");
-    birthdayCarousel.className = "birthday-carousel";
-    birthdayCarousel.setAttribute("role", "region");
-    birthdayCarousel.setAttribute("aria-label", "Birthday greeting");
-
-    const track = document.createElement("div");
-    track.className = "birthday-carousel-track";
-    track.setAttribute("aria-hidden", "true");
-
-    const createMessage = () => {
-        const message = document.createElement("span");
-        message.className = "birthday-carousel-message";
-        message.textContent = "HAPPY BIRTHDAY ADEJUMOBI";
-        return message;
-    };
-
-    track.append(createMessage());
-    birthdayCarousel.append(track);
-
-    const accessibleMessage = document.createElement("span");
-    accessibleMessage.className = "visually-hidden";
-    accessibleMessage.textContent = "Happy birthday Adejumobi";
-    birthdayCarousel.append(accessibleMessage);
-
+if (siteHeader && birthdayCarousel && track) {
     const siteChrome = document.createElement("div");
     siteChrome.className = "site-chrome";
     siteHeader.before(siteChrome);
@@ -39,16 +20,29 @@ if (siteHeader) {
     const messageWidth = track.firstElementChild.getBoundingClientRect().width || 240;
     const carouselDuration = 30000;
     const carouselStartKey = "birthday-carousel-start-time";
-    let carouselStartTime = Number(sessionStorage.getItem(carouselStartKey));
+    let carouselStartTime;
 
-    if (!Number.isFinite(carouselStartTime) || carouselStartTime <= 0) {
+    try {
+        carouselStartTime = Number(sessionStorage.getItem(carouselStartKey));
+        if (!Number.isFinite(carouselStartTime) || carouselStartTime <= 0) {
+            carouselStartTime = Date.now();
+            sessionStorage.setItem(carouselStartKey, String(carouselStartTime));
+        }
+    } catch {
         carouselStartTime = Date.now();
-        sessionStorage.setItem(carouselStartKey, String(carouselStartTime));
     }
+
+    const createMessage = () => {
+        const message = document.createElement("span");
+        message.className = "birthday-carousel-message";
+        message.textContent = "HAPPY BIRTHDAY ADEJUMOBI";
+        return message;
+    };
 
     const fillTrack = () => {
         const messagesPerLoop = Math.ceil(window.innerWidth / messageWidth) + 1;
         track.replaceChildren(...Array.from({ length: messagesPerLoop * 2 }, createMessage));
+        track.classList.add("is-moving");
         const elapsed = (Date.now() - carouselStartTime) % carouselDuration;
         track.style.animationDelay = `-${elapsed / 1000}s`;
     };
@@ -82,7 +76,9 @@ if (themeToggle) {
     themeToggle.addEventListener("click", () => {
         const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
         document.documentElement.dataset.theme = nextTheme;
-        localStorage.setItem("theme", nextTheme);
+        try {
+            localStorage.setItem("theme", nextTheme);
+        } catch {}
         updateThemeLabel();
     });
 }

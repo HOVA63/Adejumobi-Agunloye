@@ -94,7 +94,13 @@ svg {
 
 .birthday-carousel-track {
     display: flex;
+    width: 100%;
+    justify-content: center;
+}
+
+.birthday-carousel-track.is-moving {
     width: max-content;
+    justify-content: flex-start;
     animation: birthday-carousel-scroll 30s linear infinite;
     will-change: transform;
 }
@@ -125,13 +131,13 @@ svg {
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .birthday-carousel-track {
+    .birthday-carousel-track.is-moving {
         width: 100%;
         justify-content: center;
         animation: none;
     }
 
-    .birthday-carousel-message:not(:first-child) {
+    .birthday-carousel-track.is-moving .birthday-carousel-message:not(:first-child) {
         display: none;
     }
 }
