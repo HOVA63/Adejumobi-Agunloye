@@ -412,6 +412,10 @@ footer .limit {
 }
 
 @media (max-width: 720px) {
+    .birthday-flyover {
+        top: 16vh;
+    }
+
     .fireworks-status {
         bottom: 1rem;
         left: 1rem;

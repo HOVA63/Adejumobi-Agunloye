@@ -79,7 +79,6 @@ if (fireworksCanvas && fireworksStatus) {
     let animationFrame;
     let lastFrameTime = 0;
     let lastPointerBurstTime = 0;
-    let fireworksEnabled = false;
 
     const resizeCanvas = () => {
         const pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
@@ -167,25 +166,23 @@ if (fireworksCanvas && fireworksStatus) {
     };
 
     resizeCanvas();
+    fireworksStatus.hidden = false;
     launchRandomBurst();
     launchRandomBurst();
     const automaticShow = window.setInterval(launchRandomBurst, 520);
     window.setTimeout(() => {
         window.clearInterval(automaticShow);
-        fireworksEnabled = true;
-        fireworksStatus.hidden = false;
     }, 5000);
 
     window.addEventListener("resize", resizeCanvas);
     window.addEventListener("pointermove", event => {
-        if (!fireworksEnabled || (event.pointerType !== "mouse" && event.pointerType !== "pen")) return;
+        if (event.pointerType !== "mouse" && event.pointerType !== "pen") return;
         if (event.timeStamp - lastPointerBurstTime < 32) return;
 
         lastPointerBurstTime = event.timeStamp;
         launchAt(event.clientX, event.clientY);
     });
     window.addEventListener("pointerdown", event => {
-        if (!fireworksEnabled) return;
         launchAt(event.clientX, event.clientY);
     });
 }
