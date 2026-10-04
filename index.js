@@ -89,20 +89,23 @@ if (fireworksCanvas && fireworksStatus) {
     };
 
     const createBurst = (x, y) => {
-        const hue = Math.floor(Math.random() * 360);
-        const particleCount = 54;
+        const burstHues = [42, 52, 185, 195, 330, 280];
+        const hue = burstHues[Math.floor(Math.random() * burstHues.length)];
+        const particleCount = 88;
 
         for (let index = 0; index < particleCount; index += 1) {
-            const angle = (Math.PI * 2 * index) / particleCount + Math.random() * 0.12;
-            const speed = 1.2 + Math.random() * 3.6;
+            const angle = (Math.PI * 2 * index) / particleCount + Math.random() * 0.1;
+            const speed = 1.6 + Math.random() * 4.7;
             particles.push({
                 x,
                 y,
+                previousX: x,
+                previousY: y,
                 velocityX: Math.cos(angle) * speed,
                 velocityY: Math.sin(angle) * speed,
-                life: 55 + Math.random() * 35,
-                hue: (hue + Math.random() * 34 - 17 + 360) % 360,
-                size: 1.2 + Math.random() * 1.8
+                life: 65 + Math.random() * 45,
+                hue: (hue + Math.random() * 28 - 14 + 360) % 360,
+                size: 1.7 + Math.random() * 2.4
             });
         }
     };
@@ -127,6 +130,8 @@ if (fireworksCanvas && fireworksStatus) {
 
         for (let index = particles.length - 1; index >= 0; index -= 1) {
             const particle = particles[index];
+            particle.previousX = particle.x;
+            particle.previousY = particle.y;
             particle.x += particle.velocityX * delta;
             particle.y += particle.velocityY * delta;
             particle.velocityX *= 0.985;
@@ -139,13 +144,22 @@ if (fireworksCanvas && fireworksStatus) {
             }
 
             context.beginPath();
-            context.fillStyle = `hsla(${particle.hue}, 100%, 68%, ${Math.min(particle.life / 24, 1)})`;
-            context.shadowBlur = 14;
+            context.globalAlpha = Math.min(particle.life / 28, 1);
+            context.strokeStyle = `hsl(${particle.hue}, 100%, 72%)`;
+            context.lineWidth = particle.size;
+            context.lineCap = "round";
+            context.shadowBlur = 22;
             context.shadowColor = `hsl(${particle.hue}, 100%, 65%)`;
+            context.moveTo(particle.previousX, particle.previousY);
+            context.lineTo(particle.x, particle.y);
+            context.stroke();
+            context.beginPath();
+            context.fillStyle = `hsl(${particle.hue}, 100%, 82%)`;
             context.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
             context.fill();
         }
 
+        context.globalAlpha = 1;
         context.shadowBlur = 0;
         animationFrame = particles.length ? window.requestAnimationFrame(animateFireworks) : null;
     };
@@ -159,7 +173,8 @@ if (fireworksCanvas && fireworksStatus) {
 
     resizeCanvas();
     launchRandomBurst();
-    const automaticShow = window.setInterval(launchRandomBurst, 650);
+    launchRandomBurst();
+    const automaticShow = window.setInterval(launchRandomBurst, 520);
     window.setTimeout(() => {
         window.clearInterval(automaticShow);
         fireworksEnabled = true;
@@ -169,7 +184,7 @@ if (fireworksCanvas && fireworksStatus) {
     window.addEventListener("resize", resizeCanvas);
     window.addEventListener("pointermove", event => {
         if (!fireworksEnabled || (event.pointerType !== "mouse" && event.pointerType !== "pen")) return;
-        if (event.timeStamp - lastPointerBurstTime < 75) return;
+        if (event.timeStamp - lastPointerBurstTime < 100) return;
 
         lastPointerBurstTime = event.timeStamp;
         launchAt(event.clientX, event.clientY);

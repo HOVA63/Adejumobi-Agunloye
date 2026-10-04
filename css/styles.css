@@ -55,7 +55,7 @@ svg {
 .header-shell {
     position: sticky;
     top: 0;
-    z-index: 1;
+    z-index: 3;
     background-color: var(--header-background);
     backdrop-filter: blur(8px);
 }
@@ -270,7 +270,7 @@ svg {
 .fireworks-canvas {
     position: fixed;
     inset: 0;
-    z-index: -1;
+    z-index: 2;
     width: 100%;
     height: 100%;
     overflow: hidden;
