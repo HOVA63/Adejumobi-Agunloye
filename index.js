@@ -82,7 +82,7 @@ if (fireworksCanvas && fireworksStatus) {
     let fireworksEnabled = false;
 
     const resizeCanvas = () => {
-        const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+        const pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
         fireworksCanvas.width = Math.floor(window.innerWidth * pixelRatio);
         fireworksCanvas.height = Math.floor(window.innerHeight * pixelRatio);
         context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
@@ -91,7 +91,7 @@ if (fireworksCanvas && fireworksStatus) {
     const createBurst = (x, y) => {
         const burstHues = [42, 52, 185, 195, 330, 280];
         const hue = burstHues[Math.floor(Math.random() * burstHues.length)];
-        const particleCount = 88;
+        const particleCount = 64;
 
         for (let index = 0; index < particleCount; index += 1) {
             const angle = (Math.PI * 2 * index) / particleCount + Math.random() * 0.1;
@@ -127,6 +127,7 @@ if (fireworksCanvas && fireworksStatus) {
         lastFrameTime = time;
 
         context.clearRect(0, 0, width, height);
+        context.globalCompositeOperation = "lighter";
 
         for (let index = particles.length - 1; index >= 0; index -= 1) {
             const particle = particles[index];
@@ -148,19 +149,13 @@ if (fireworksCanvas && fireworksStatus) {
             context.strokeStyle = `hsl(${particle.hue}, 100%, 72%)`;
             context.lineWidth = particle.size;
             context.lineCap = "round";
-            context.shadowBlur = 22;
-            context.shadowColor = `hsl(${particle.hue}, 100%, 65%)`;
             context.moveTo(particle.previousX, particle.previousY);
             context.lineTo(particle.x, particle.y);
             context.stroke();
-            context.beginPath();
-            context.fillStyle = `hsl(${particle.hue}, 100%, 82%)`;
-            context.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-            context.fill();
         }
 
         context.globalAlpha = 1;
-        context.shadowBlur = 0;
+        context.globalCompositeOperation = "source-over";
         animationFrame = particles.length ? window.requestAnimationFrame(animateFireworks) : null;
     };
 
@@ -184,7 +179,7 @@ if (fireworksCanvas && fireworksStatus) {
     window.addEventListener("resize", resizeCanvas);
     window.addEventListener("pointermove", event => {
         if (!fireworksEnabled || (event.pointerType !== "mouse" && event.pointerType !== "pen")) return;
-        if (event.timeStamp - lastPointerBurstTime < 100) return;
+        if (event.timeStamp - lastPointerBurstTime < 32) return;
 
         lastPointerBurstTime = event.timeStamp;
         launchAt(event.clientX, event.clientY);
