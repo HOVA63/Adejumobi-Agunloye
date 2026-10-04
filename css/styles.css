@@ -11,6 +11,8 @@
     --accent-color: #7b2cbf;
     --footer-background: #171717;
     --footer-text-color: #ffffff;
+    --birthday-carousel-background: #51266b;
+    --birthday-carousel-text: #ffffff;
 }
 
 :root[data-theme="dark"] {
@@ -22,6 +24,8 @@
     --accent-color: #d7a5ff;
     --footer-background: #080808;
     --footer-text-color: #f7f4ef;
+    --birthday-carousel-background: #392148;
+    --birthday-carousel-text: #fffaff;
 }
 
 body {
@@ -52,10 +56,14 @@ svg {
     width: 100%;
 }
 
-.header-shell {
+.site-chrome {
     position: sticky;
     top: 0;
     z-index: 3;
+}
+
+.header-shell {
+    position: relative;
     background-color: var(--header-background);
     backdrop-filter: blur(8px);
 }
@@ -70,6 +78,62 @@ svg {
     justify-content: space-between;
 
     font-size: 1.05rem;
+}
+
+.birthday-carousel {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 2.4rem;
+    overflow: hidden;
+    background: var(--birthday-carousel-background);
+    color: var(--birthday-carousel-text);
+}
+
+.birthday-carousel-track {
+    display: flex;
+    width: max-content;
+    animation: birthday-carousel-scroll 30s linear infinite;
+    will-change: transform;
+}
+
+.birthday-carousel-message {
+    position: relative;
+    flex: none;
+    padding-inline: 1.6rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.birthday-carousel-message::after {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    width: 0.3rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--accent-color);
+    content: '';
+    transform: translate(50%, -50%);
+}
+
+@keyframes birthday-carousel-scroll {
+    to { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .birthday-carousel-track {
+        width: 100%;
+        justify-content: center;
+        animation: none;
+    }
+
+    .birthday-carousel-message:not(:first-child) {
+        display: none;
+    }
 }
 
 .menu-toggle {
@@ -285,9 +349,9 @@ svg {
     max-width: calc(100vw - 11rem);
     margin: 0;
     padding: 0.75rem 1rem;
-    border-left: 3px solid #f4c95d;
-    background: rgba(23, 23, 23, 0.92);
-    color: #fff;
+    border-left: 3px solid var(--accent-color);
+    background: var(--header-background);
+    color: var(--text-color);
     font-family: 'Barlow', sans-serif;
     font-size: 0.95rem;
 }
@@ -412,10 +476,6 @@ footer .limit {
 }
 
 @media (max-width: 720px) {
-    .birthday-flyover {
-        top: 16vh;
-    }
-
     .fireworks-status {
         bottom: 1rem;
         left: 1rem;

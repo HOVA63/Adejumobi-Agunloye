@@ -4,6 +4,59 @@ const initialTheme = savedTheme || (prefersDark ? "dark" : "light");
 
 document.documentElement.dataset.theme = initialTheme;
 
+const siteHeader = document.querySelector(".header-shell");
+
+if (siteHeader) {
+    const birthdayCarousel = document.createElement("div");
+    birthdayCarousel.className = "birthday-carousel";
+    birthdayCarousel.setAttribute("role", "region");
+    birthdayCarousel.setAttribute("aria-label", "Birthday greeting");
+
+    const track = document.createElement("div");
+    track.className = "birthday-carousel-track";
+    track.setAttribute("aria-hidden", "true");
+
+    const createMessage = () => {
+        const message = document.createElement("span");
+        message.className = "birthday-carousel-message";
+        message.textContent = "HAPPY BIRTHDAY ADEJUMOBI";
+        return message;
+    };
+
+    track.append(createMessage());
+    birthdayCarousel.append(track);
+
+    const accessibleMessage = document.createElement("span");
+    accessibleMessage.className = "visually-hidden";
+    accessibleMessage.textContent = "Happy birthday Adejumobi";
+    birthdayCarousel.append(accessibleMessage);
+
+    const siteChrome = document.createElement("div");
+    siteChrome.className = "site-chrome";
+    siteHeader.before(siteChrome);
+    siteChrome.append(siteHeader, birthdayCarousel);
+
+    const messageWidth = track.firstElementChild.getBoundingClientRect().width || 240;
+    const carouselDuration = 30000;
+    const carouselStartKey = "birthday-carousel-start-time";
+    let carouselStartTime = Number(sessionStorage.getItem(carouselStartKey));
+
+    if (!Number.isFinite(carouselStartTime) || carouselStartTime <= 0) {
+        carouselStartTime = Date.now();
+        sessionStorage.setItem(carouselStartKey, String(carouselStartTime));
+    }
+
+    const fillTrack = () => {
+        const messagesPerLoop = Math.ceil(window.innerWidth / messageWidth) + 1;
+        track.replaceChildren(...Array.from({ length: messagesPerLoop * 2 }, createMessage));
+        const elapsed = (Date.now() - carouselStartTime) % carouselDuration;
+        track.style.animationDelay = `-${elapsed / 1000}s`;
+    };
+
+    fillTrack();
+    window.addEventListener("resize", fillTrack);
+}
+
 document.querySelectorAll(".menu-toggle").forEach(menuToggle => {
     const navigation = menuToggle.closest(".header-limit");
 
