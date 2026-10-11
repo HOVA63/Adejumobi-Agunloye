@@ -92,6 +92,12 @@ svg {
     color: var(--birthday-carousel-text);
 }
 
+html:not([data-birthday-active="true"]) .birthday-carousel,
+html:not([data-birthday-active="true"]) .fireworks-canvas,
+html:not([data-birthday-active="true"]) .fireworks-status {
+    display: none;
+}
+
 .birthday-carousel-track {
     display: flex;
     width: 100%;

@@ -7,11 +7,20 @@ const initialTheme = savedTheme || (prefersDark ? "dark" : "light");
 
 document.documentElement.dataset.theme = initialTheme;
 
+const nigeriaDate = new Intl.DateTimeFormat("en-NG", {
+    timeZone: "Africa/Lagos",
+    month: "numeric",
+    day: "numeric"
+}).formatToParts(new Date());
+const isNigeriaBirthday = nigeriaDate.find(part => part.type === "month").value === "10"
+    && nigeriaDate.find(part => part.type === "day").value === "23";
+document.documentElement.dataset.birthdayActive = String(isNigeriaBirthday);
+
 const siteHeader = document.querySelector(".header-shell");
 const birthdayCarousel = document.querySelector(".birthday-carousel");
 const track = document.querySelector("[data-birthday-carousel-track]");
 
-if (siteHeader && birthdayCarousel && track) {
+if (isNigeriaBirthday && siteHeader && birthdayCarousel && track) {
     const siteChrome = document.createElement("div");
     siteChrome.className = "site-chrome";
     siteHeader.before(siteChrome);
@@ -122,7 +131,7 @@ loadlinks();
 const fireworksCanvas = document.querySelector("[data-fireworks-canvas]");
 const fireworksStatus = document.querySelector("[data-fireworks-status]");
 
-if (fireworksCanvas && fireworksStatus) {
+if (isNigeriaBirthday && fireworksCanvas && fireworksStatus) {
     const context = fireworksCanvas.getContext("2d");
     const particles = [];
     let animationFrame;
