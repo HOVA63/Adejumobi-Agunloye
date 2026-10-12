@@ -110,6 +110,106 @@ async function loadItems() {
 }
 loadItems();
 
+async function loadMediumArticles() {
+    const container = document.getElementById("articles-container");
+    if (!container) return;
+
+    const mediumFeedUrl = "https://medium.com/feed/@adejumobiagunloye";
+    const proxyUrl = new URL("https://api.rss2json.com/v1/api.json");
+    proxyUrl.searchParams.set("rss_url", mediumFeedUrl);
+
+    const fallbackImage = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 400'%3E%3Crect width='600' height='400' fill='%23e9e6df'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%235f5a53' font-family='sans-serif' font-size='28'%3EMedium article%3C/text%3E%3C/svg%3E";
+
+    // Parse feed HTML without inserting it into the live page.
+    const parseFeedHtml = markup => {
+        const parsed = new DOMParser().parseFromString(markup || "", "text/html");
+        parsed.querySelectorAll("script, style").forEach(element => element.remove());
+        return parsed;
+    };
+
+    const createArticleCard = item => {
+        let articleUrl;
+        try {
+            articleUrl = new URL(item.link);
+        } catch {
+            return null;
+        }
+        if (articleUrl.protocol !== "https:") return null;
+
+        const content = parseFeedHtml(item.content || item.description);
+        const description = parseFeedHtml(item.description || item.content);
+        const snippet = description.body.textContent.replace(/\s+/g, " ").trim();
+        const article = document.createElement("article");
+        article.className = "article-card";
+
+        const imageLink = document.createElement("a");
+        imageLink.className = "article-card-image-link";
+        imageLink.href = articleUrl.href;
+        imageLink.target = "_blank";
+        imageLink.rel = "noopener noreferrer";
+
+        const image = document.createElement("img");
+        image.className = "article-card-image";
+        // Use the first article image, or the local data-URI placeholder.
+        image.src = content.querySelector("img")?.getAttribute("src") || fallbackImage;
+        image.alt = "";
+        image.loading = "lazy";
+        image.addEventListener("error", () => {
+            image.src = fallbackImage;
+        }, { once: true });
+        imageLink.append(image);
+
+        const details = document.createElement("div");
+        details.className = "article-card-details";
+
+        const publishedAt = new Date(item.pubDate);
+        const date = document.createElement("time");
+        date.className = "article-card-date";
+        if (!Number.isNaN(publishedAt.valueOf())) {
+            date.dateTime = publishedAt.toISOString();
+            date.textContent = new Intl.DateTimeFormat(undefined, { dateStyle: "long" }).format(publishedAt);
+        }
+
+        const title = document.createElement("h2");
+        const titleLink = document.createElement("a");
+        titleLink.href = articleUrl.href;
+        titleLink.target = "_blank";
+        titleLink.rel = "noopener noreferrer";
+        titleLink.textContent = item.title || "Untitled article";
+        title.append(titleLink);
+
+        const excerpt = document.createElement("p");
+        excerpt.className = "article-card-excerpt";
+        excerpt.textContent = snippet.length > 140 ? `${snippet.slice(0, 137).trimEnd()}...` : snippet;
+
+        details.append(date, title, excerpt);
+        article.append(imageLink, details);
+        return article;
+    };
+
+    try {
+        const response = await fetch(proxyUrl);
+        if (!response.ok) throw new Error("The article feed could not be reached.");
+
+        const feed = await response.json();
+        if (feed.status !== "ok" || !Array.isArray(feed.items)) {
+            throw new Error("The article feed returned an invalid response.");
+        }
+
+        const cards = feed.items.map(createArticleCard).filter(Boolean);
+        container.setAttribute("aria-busy", "false");
+        if (!cards.length) {
+            container.innerHTML = '<p class="articles-message">No articles are available right now.</p>';
+            return;
+        }
+        container.replaceChildren(...cards);
+    } catch {
+        container.setAttribute("aria-busy", "false");
+        container.innerHTML = '<p class="articles-message">Articles are temporarily unavailable. Please try again later.</p>';
+    }
+}
+loadMediumArticles();
+
 async function loadlinks() {
     const response = await fetch("svg.json");
     const items = await response.json();

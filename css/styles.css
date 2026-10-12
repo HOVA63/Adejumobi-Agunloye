@@ -306,6 +306,99 @@ html:not([data-birthday-active="true"]) .fireworks-status {
     min-height: calc(100svh - 100px);
 }
 
+.articles-section {
+    padding: 2rem clamp(1rem, 4vw, 2.5rem) 5rem;
+}
+
+.articles-section > h1 {
+    margin: 0 0 1.5rem;
+    font-size: 2rem;
+    font-weight: 500;
+}
+
+.articles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+    gap: 1.5rem;
+    align-items: start;
+}
+
+.article-card {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--text-color) 14%, transparent);
+    border-radius: 4px;
+    background: var(--header-background);
+}
+
+.article-card-image-link {
+    display: block;
+    overflow: hidden;
+    aspect-ratio: 3 / 2;
+    background: #e9e6df;
+}
+
+.article-card-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.article-card-details {
+    padding: 1.1rem 1.2rem 1.3rem;
+}
+
+.article-card-date {
+    color: var(--muted-text-color);
+    font-family: 'Barlow', sans-serif;
+    font-size: 0.9rem;
+}
+
+.article-card h2 {
+    margin: 0.55rem 0;
+    font-size: 1.35rem;
+    font-weight: 500;
+    line-height: 1.25;
+}
+
+.article-card h2 a:hover {
+    color: var(--accent-color);
+}
+
+.article-card-excerpt,
+.articles-message {
+    color: var(--muted-text-color);
+    font-family: 'Barlow', sans-serif;
+    line-height: 1.55;
+}
+
+.article-card-excerpt {
+    margin: 0;
+}
+
+.articles-message {
+    grid-column: 1 / -1;
+    margin: 0;
+}
+
+.articles-more {
+    margin: 2.5rem 0 0;
+    color: var(--muted-text-color);
+    font-family: 'Barlow', sans-serif;
+    line-height: 1.55;
+}
+
+.articles-more a {
+    color: var(--text-color);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+}
+
+.articles-more a:hover {
+    color: var(--accent-color);
+}
+
 .home-about {
     height: 100%;
     padding: 3rem;
