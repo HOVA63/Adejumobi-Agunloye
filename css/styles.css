@@ -310,10 +310,28 @@ html:not([data-birthday-active="true"]) .fireworks-status {
     padding: 2rem clamp(1rem, 4vw, 2.5rem) 5rem;
 }
 
-.articles-section > h1 {
+.articles-section > h1,
+.articles-section > h2 {
     margin: 0 0 1.5rem;
     font-size: 2rem;
     font-weight: 500;
+}
+
+.home-articles-section {
+    padding-bottom: 3rem;
+}
+
+.home-articles-section > h2 {
+    text-align: center;
+}
+
+.home-articles-section .articles-grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 22rem));
+    justify-content: center;
+}
+
+.home-articles-section .articles-more {
+    text-align: center;
 }
 
 .articles-grid {

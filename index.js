@@ -111,7 +111,7 @@ async function loadItems() {
 loadItems();
 
 async function loadMediumArticles() {
-    const container = document.getElementById("articles-container");
+    const container = document.querySelector("[data-medium-articles]");
     if (!container) return;
 
     const mediumFeedUrl = "https://medium.com/feed/@adejumobiagunloye";
@@ -196,7 +196,11 @@ async function loadMediumArticles() {
             throw new Error("The article feed returned an invalid response.");
         }
 
-        const cards = feed.items.map(createArticleCard).filter(Boolean);
+        const articleLimit = Number.parseInt(container.dataset.limit, 10);
+        const items = Number.isInteger(articleLimit) && articleLimit > 0
+            ? feed.items.slice(0, articleLimit)
+            : feed.items;
+        const cards = items.map(createArticleCard).filter(Boolean);
         container.setAttribute("aria-busy", "false");
         if (!cards.length) {
             container.innerHTML = '<p class="articles-message">No articles are available right now.</p>';
@@ -205,7 +209,17 @@ async function loadMediumArticles() {
         container.replaceChildren(...cards);
     } catch {
         container.setAttribute("aria-busy", "false");
-        container.innerHTML = '<p class="articles-message">Articles are temporarily unavailable. Please try again later.</p>';
+        const message = document.createElement("p");
+        message.className = "articles-message";
+        message.append("Unable to load articles. Visit ");
+
+        const mediumLink = document.createElement("a");
+        mediumLink.href = "https://medium.com/@adejumobiagunloye";
+        mediumLink.target = "_blank";
+        mediumLink.rel = "noopener noreferrer";
+        mediumLink.textContent = mediumLink.href;
+        message.append(mediumLink, " to read more articles.");
+        container.replaceChildren(message);
     }
 }
 loadMediumArticles();
