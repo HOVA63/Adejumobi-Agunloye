@@ -110,35 +110,24 @@ async function loadItems() {
 }
 loadItems();
 
-async function loadMediumArticles() {
-    const container = document.querySelector("[data-medium-articles]");
+async function loadSubstackArticles() {
+    const container = document.querySelector("[data-articles]");
     if (!container) return;
 
-    const mediumFeedUrl = "https://medium.com/feed/@adejumobiagunloye";
-    const proxyUrl = new URL("https://api.rss2json.com/v1/api.json");
-    proxyUrl.searchParams.set("rss_url", mediumFeedUrl);
+    const archiveUrl = "https://r.jina.ai/https://adejumobiagunloye.substack.com/api/v1/archive?sort=new%26limit=50";
 
-    const fallbackImage = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 400'%3E%3Crect width='600' height='400' fill='%23e9e6df'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%235f5a53' font-family='sans-serif' font-size='28'%3EMedium article%3C/text%3E%3C/svg%3E";
-
-    // Parse feed HTML without inserting it into the live page.
-    const parseFeedHtml = markup => {
-        const parsed = new DOMParser().parseFromString(markup || "", "text/html");
-        parsed.querySelectorAll("script, style").forEach(element => element.remove());
-        return parsed;
-    };
+    const fallbackImage = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 400'%3E%3Crect width='600' height='400' fill='%23e9e6df'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%235f5a53' font-family='sans-serif' font-size='28'%3ESubstack article%3C/text%3E%3C/svg%3E";
 
     const createArticleCard = item => {
         let articleUrl;
         try {
-            articleUrl = new URL(item.link);
+            articleUrl = new URL(item.canonical_url);
         } catch {
             return null;
         }
         if (articleUrl.protocol !== "https:") return null;
 
-        const content = parseFeedHtml(item.content || item.description);
-        const description = parseFeedHtml(item.description || item.content);
-        const snippet = description.body.textContent.replace(/\s+/g, " ").trim();
+        const snippet = (item.description || item.truncated_body_text || "").replace(/\s+/g, " ").trim();
         const article = document.createElement("article");
         article.className = "article-card";
 
@@ -147,11 +136,10 @@ async function loadMediumArticles() {
         imageLink.href = articleUrl.href;
         imageLink.target = "_blank";
         imageLink.rel = "noopener noreferrer";
-
         const image = document.createElement("img");
         image.className = "article-card-image";
-        // Use the first article image, or the local data-URI placeholder.
-        image.src = content.querySelector("img")?.getAttribute("src") || fallbackImage;
+        image.className = "article-card-image";
+        image.src = item.cover_image || fallbackImage;
         image.alt = "";
         image.loading = "lazy";
         image.addEventListener("error", () => {
@@ -162,7 +150,7 @@ async function loadMediumArticles() {
         const details = document.createElement("div");
         details.className = "article-card-details";
 
-        const publishedAt = new Date(item.pubDate);
+        const publishedAt = new Date(item.post_date);
         const date = document.createElement("time");
         date.className = "article-card-date";
         if (!Number.isNaN(publishedAt.valueOf())) {
@@ -188,18 +176,23 @@ async function loadMediumArticles() {
     };
 
     try {
-        const response = await fetch(proxyUrl);
+        const response = await fetch(archiveUrl);
         if (!response.ok) throw new Error("The article feed could not be reached.");
 
-        const feed = await response.json();
-        if (feed.status !== "ok" || !Array.isArray(feed.items)) {
+        const responseText = await response.text();
+        const contentMarker = "\nMarkdown Content:\n";
+        const contentStart = responseText.indexOf(contentMarker);
+        if (contentStart === -1) throw new Error("The article feed returned an invalid response.");
+
+        const articles = JSON.parse(responseText.slice(contentStart + contentMarker.length).trim());
+        if (!Array.isArray(articles)) {
             throw new Error("The article feed returned an invalid response.");
         }
 
         const articleLimit = Number.parseInt(container.dataset.limit, 10);
         const items = Number.isInteger(articleLimit) && articleLimit > 0
-            ? feed.items.slice(0, articleLimit)
-            : feed.items;
+            ? articles.slice(0, articleLimit)
+            : articles;
         const cards = items.map(createArticleCard).filter(Boolean);
         container.setAttribute("aria-busy", "false");
         if (!cards.length) {
@@ -207,22 +200,23 @@ async function loadMediumArticles() {
             return;
         }
         container.replaceChildren(...cards);
-    } catch {
+    } catch (error) {
+        console.error("Unable to load Substack articles.", error);
         container.setAttribute("aria-busy", "false");
         const message = document.createElement("p");
         message.className = "articles-message";
         message.append("Unable to load articles. Visit ");
 
-        const mediumLink = document.createElement("a");
-        mediumLink.href = "https://medium.com/@adejumobiagunloye";
-        mediumLink.target = "_blank";
-        mediumLink.rel = "noopener noreferrer";
-        mediumLink.textContent = mediumLink.href;
-        message.append(mediumLink, " to read more articles.");
+        const substackLink = document.createElement("a");
+        substackLink.href = "https://adejumobiagunloye.substack.com/";
+        substackLink.target = "_blank";
+        substackLink.rel = "noopener noreferrer";
+        substackLink.textContent = "Speaking of SDG4 on Substack";
+        message.append(substackLink, " to read more articles.");
         container.replaceChildren(message);
     }
 }
-loadMediumArticles();
+loadSubstackArticles();
 
 async function loadlinks() {
     const response = await fetch("svg.json");
