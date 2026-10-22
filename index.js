@@ -110,6 +110,120 @@ async function loadItems() {
 }
 loadItems();
 
+async function loadMediumArticles() {
+    const container = document.querySelector("[data-medium-articles]");
+    if (!container) return;
+
+    // Served by the Cloudflare Pages Function in functions/api/medium-stories.js.
+    const storiesUrl = "/api/medium-stories";
+
+    const fallbackImage = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 400'%3E%3Crect width='600' height='400' fill='%23e9e6df'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%235f5a53' font-family='sans-serif' font-size='28'%3EMedium article%3C/text%3E%3C/svg%3E";
+
+    const createArticleCard = item => {
+        let articleUrl;
+        try {
+            articleUrl = new URL(item.link);
+        } catch {
+            return null;
+        }
+        if (articleUrl.protocol !== "https:" || !/(^|\.)medium\.com$/i.test(articleUrl.hostname)) return null;
+
+        const snippet = String(item.description || "").replace(/\s+/g, " ").trim();
+        const article = document.createElement("article");
+        article.className = "article-card";
+
+        const imageLink = document.createElement("a");
+        imageLink.className = "article-card-image-link";
+        imageLink.href = articleUrl.href;
+        imageLink.target = "_blank";
+        imageLink.rel = "noopener noreferrer";
+
+        const image = document.createElement("img");
+        image.className = "article-card-image";
+        const feedImage = item.image;
+        if (!feedImage) {
+            image.src = fallbackImage;
+        } else {
+            try {
+                const imageUrl = new URL(feedImage, articleUrl);
+                image.src = imageUrl.protocol === "https:" ? imageUrl.href : fallbackImage;
+            } catch {
+                image.src = fallbackImage;
+            }
+        }
+        image.alt = "";
+        image.loading = "lazy";
+        image.addEventListener("error", () => {
+            image.src = fallbackImage;
+        }, { once: true });
+        imageLink.append(image);
+
+        const details = document.createElement("div");
+        details.className = "article-card-details";
+
+        const publishedAt = new Date(item.pubDate);
+        const date = document.createElement("time");
+        date.className = "article-card-date";
+        if (!Number.isNaN(publishedAt.valueOf())) {
+            date.dateTime = publishedAt.toISOString();
+            date.textContent = new Intl.DateTimeFormat(undefined, { dateStyle: "long" }).format(publishedAt);
+        }
+
+        const title = document.createElement("h2");
+        const titleLink = document.createElement("a");
+        titleLink.href = articleUrl.href;
+        titleLink.target = "_blank";
+        titleLink.rel = "noopener noreferrer";
+        titleLink.textContent = item.title || "Untitled story";
+        title.append(titleLink);
+
+        const excerpt = document.createElement("p");
+        excerpt.className = "article-card-excerpt";
+        excerpt.textContent = snippet.length > 140 ? `${snippet.slice(0, 137).trimEnd()}...` : snippet;
+
+        details.append(date, title, excerpt);
+        article.append(imageLink, details);
+        return article;
+    };
+
+    try {
+        const response = await fetch(storiesUrl, { cache: "no-cache" });
+        if (!response.ok) throw new Error("The Medium stories file could not be loaded.");
+
+        const feed = await response.json();
+        if (feed.status !== "ok" || !Array.isArray(feed.items)) {
+            throw new Error("The Medium stories file has an invalid format.");
+        }
+
+        const articleLimit = Number.parseInt(container.dataset.limit, 10);
+        const items = Number.isInteger(articleLimit) && articleLimit > 0
+            ? feed.items.slice(0, articleLimit)
+            : feed.items;
+        const cards = items.map(createArticleCard).filter(Boolean);
+        container.setAttribute("aria-busy", "false");
+        if (!cards.length) {
+            container.innerHTML = '<p class="articles-message">No stories are available right now.</p>';
+            return;
+        }
+        container.replaceChildren(...cards);
+    } catch (error) {
+        console.error("Unable to load Medium stories.", error);
+        container.setAttribute("aria-busy", "false");
+        const message = document.createElement("p");
+        message.className = "articles-message";
+        message.append("Unable to load stories. Visit ");
+
+        const mediumLink = document.createElement("a");
+        mediumLink.href = "https://medium.com/@adejumobiagunloye";
+        mediumLink.target = "_blank";
+        mediumLink.rel = "noopener noreferrer";
+        mediumLink.textContent = "Adejumobi on Medium";
+        message.append(mediumLink, " to read the stories.");
+        container.replaceChildren(message);
+    }
+}
+loadMediumArticles();
+
 async function loadSubstackArticles() {
     const container = document.querySelector("[data-articles]");
     if (!container) return;
