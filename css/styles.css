@@ -520,6 +520,7 @@ html:not([data-birthday-active="true"]) .fireworks-status {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
+    padding-inline: clamp(1rem, 4vw, 2.5rem);
 }
 
 .fireworks-canvas {
