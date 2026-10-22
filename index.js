@@ -20,12 +20,14 @@ const siteHeader = document.querySelector(".header-shell");
 const birthdayCarousel = document.querySelector(".birthday-carousel");
 const track = document.querySelector("[data-birthday-carousel-track]");
 
-if (isNigeriaBirthday && siteHeader && birthdayCarousel && track) {
+if (siteHeader && birthdayCarousel) {
     const siteChrome = document.createElement("div");
     siteChrome.className = "site-chrome";
     siteHeader.before(siteChrome);
     siteChrome.append(siteHeader, birthdayCarousel);
+}
 
+if (isNigeriaBirthday && track) {
     const messageWidth = track.firstElementChild.getBoundingClientRect().width || 240;
     const carouselDuration = 30000;
     const carouselStartKey = "birthday-carousel-start-time";
