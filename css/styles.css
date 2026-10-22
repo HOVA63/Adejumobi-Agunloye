@@ -393,20 +393,16 @@ html:not([data-birthday-active="true"]) .fireworks-status {
     text-align: center;
 }
 
-.home-articles-section .articles-grid {
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 22rem));
-    justify-content: center;
-}
-
 .home-articles-section .articles-more {
     text-align: center;
 }
 
 .articles-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 22rem));
     gap: 1.5rem;
     align-items: start;
+    justify-content: center;
 }
 
 .article-card {
@@ -668,6 +664,10 @@ footer .limit {
 }
 
 @media (max-width: 720px) {
+    .main-limit {
+        padding-inline: clamp(2rem, 8vw, 3rem);
+    }
+
     .fireworks-status {
         bottom: 1rem;
         left: 1rem;
@@ -682,7 +682,12 @@ footer .limit {
         grid-template-columns: minmax(0, 1fr);
         grid-template-rows: auto;
         justify-items: center;
-        padding: 1.25rem clamp(0.5rem, 4vw, 3rem);
+        padding: 1.25rem 0;
+    }
+
+    .articles-section,
+    .books-layout {
+        padding-inline: 0;
     }
 
     .contact-limit {
