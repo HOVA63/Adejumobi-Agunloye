@@ -94,6 +94,30 @@ if (themeToggle) {
     });
 }
 
+const copyButton = document.querySelector(".copy-button");
+
+if (copyButton) {
+    const accountNumber = "0177350051";
+    const originalLabel = copyButton.textContent;
+
+    copyButton.addEventListener("click", async () => {
+        try {
+            await navigator.clipboard.writeText(accountNumber);
+            copyButton.textContent = "Copied";
+            copyButton.disabled = true;
+            setTimeout(() => {
+                copyButton.textContent = originalLabel;
+                copyButton.disabled = false;
+            }, 1200);
+        } catch {
+            copyButton.textContent = "Failed";
+            setTimeout(() => {
+                copyButton.textContent = originalLabel;
+            }, 1200);
+        }
+    });
+}
+
 async function loadItems() {
     const container = document.getElementById("books");
     if (!container) return;

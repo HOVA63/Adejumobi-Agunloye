@@ -492,9 +492,136 @@ html:not([data-birthday-active="true"]) .fireworks-status {
     font-family: 'Barlow', sans-serif;
 }
 
+.home-about article {
+    flex: 1;
+    font-size: clamp(1.5rem, 2vw, 2.5rem);
+    line-height: 1.5;
+    font-weight: 500;
+}
+
+.home-about article a {
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+}
+
+.birthday-money-callout {
+    margin: 0 0 1.5rem;
+    font-size: clamp(1.6rem, 2vw, 2.8rem);
+    line-height: 1.2;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text-color);
+}
+
+.bank-details-card {
+    display: grid;
+    gap: 1.5rem;
+    width: min(100%, 620px);
+    margin-inline: auto;
+    padding: clamp(1.25rem, 2vw, 2rem);
+    border: 1px solid color-mix(in srgb, var(--text-color) 12%, transparent);
+    border-radius: 1rem;
+    background: color-mix(in srgb, var(--header-background) 90%, transparent);
+    box-shadow: 0 18px 40px rgba(23, 23, 23, 0.06);
+}
+
+.bank-detail-row {
+    display: grid;
+    grid-template-columns: minmax(120px, 170px) minmax(0, 1fr);
+    align-items: center;
+    gap: 1rem;
+    font-family: 'Barlow', sans-serif;
+}
+
+.bank-detail-row--number {
+    align-items: center;
+}
+
+.bank-detail-label {
+    color: var(--muted-text-color);
+    font-size: clamp(1rem, 1vw + 0.8rem, 1.2rem);
+    font-weight: 500;
+}
+
+.bank-detail-value {
+    font-size: clamp(1.15rem, 1vw + 1rem, 2rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    word-break: break-word;
+}
+
+.bank-detail-value--primary {
+    font-size: clamp(1.4rem, 1.1vw + 1.2rem, 2.5rem);
+}
+
+.account-number-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.9rem;
+    width: 100%;
+}
+
+.bank-detail-value--number {
+    flex: 1;
+    min-width: 0;
+    text-align: right;
+    font-size: clamp(1.2rem, 1vw + 1rem, 2.1rem);
+}
+
+.copy-button {
+    border: 1px solid color-mix(in srgb, var(--text-color) 25%, transparent);
+    border-radius: 0.8rem;
+    background: transparent;
+    color: var(--text-color);
+    padding: 0.55rem 1rem;
+    font: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.copy-button:hover,
+.copy-button:focus-visible {
+    border-color: var(--accent-color);
+    transform: translateY(-1px);
+}
+
 .home-about img {
     height: 700px;
     width: auto;
+}
+
+@media (max-width: 768px) {
+    .home-about {
+        flex-direction: column;
+        padding: 2rem 1rem;
+    }
+
+    .home-about img {
+        height: auto;
+        width: min(100%, 420px);
+    }
+
+    .bank-details-card {
+        width: 100%;
+    }
+
+    .bank-detail-row {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+
+    .account-number-wrap {
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+    }
+
+    .bank-detail-value--number {
+        text-align: left;
+    }
 }
 
 .book-section {
