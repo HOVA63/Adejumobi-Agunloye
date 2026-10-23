@@ -13,6 +13,9 @@
     --footer-text-color: #ffffff;
     --birthday-carousel-background: #51266b;
     --birthday-carousel-text: #ffffff;
+    --about-panel-background: rgba(255, 255, 255, 0.18);
+    --about-panel-text: #171717;
+    --about-panel-muted: rgba(23, 23, 23, 0.74);
 }
 
 :root[data-theme="dark"] {
@@ -26,6 +29,9 @@
     --footer-text-color: #f7f4ef;
     --birthday-carousel-background: #392148;
     --birthday-carousel-text: #fffaff;
+    --about-panel-background: rgba(12, 12, 12, 0.9);
+    --about-panel-text: #f7f4ef;
+    --about-panel-muted: rgba(247, 244, 239, 0.8);
 }
 
 body {
@@ -498,9 +504,9 @@ html:not([data-birthday-active="true"]) .fireworks-status {
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-    min-height: 700px;
-    padding: clamp(1.5rem, 3vw, 3rem) clamp(1.25rem, 2vw, 2.5rem);
-    background: #000000;
+    padding: clamp(1.5rem, 2vw, 2.5rem);
+    background: var(--about-panel-background);
+    color: var(--about-panel-text);
     font-size: clamp(1.5rem, 2vw, 2.5rem);
     line-height: 1.5;
     font-weight: 500;
@@ -513,11 +519,11 @@ html:not([data-birthday-active="true"]) .fireworks-status {
 
 .birthday-money-callout {
     margin: 0 0 1.5rem;
-    font-size: clamp(1.8rem, 2vw, 3.2rem);
+    font-size: clamp(1.7rem, 2vw, 3rem);
     line-height: 1.2;
     font-weight: 700;
     letter-spacing: -0.02em;
-    color: #ffffff;
+    color: var(--about-panel-text);
     text-align: left;
 }
 
@@ -531,7 +537,7 @@ html:not([data-birthday-active="true"]) .fireworks-status {
     border-radius: 0;
     background: transparent;
     box-shadow: none;
-    color: #ffffff;
+    color: var(--about-panel-text);
 }
 
 .bank-detail-row {
@@ -548,7 +554,7 @@ html:not([data-birthday-active="true"]) .fireworks-status {
 }
 
 .bank-detail-label {
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--about-panel-muted);
     font-size: clamp(1rem, 1vw + 0.8rem, 1.5rem);
     font-weight: 500;
     text-align: left;
@@ -582,10 +588,10 @@ html:not([data-birthday-active="true"]) .fireworks-status {
 }
 
 .copy-button {
-    border: 1px solid rgba(255, 255, 255, 0.35);
+    border: 1px solid color-mix(in srgb, var(--about-panel-text) 30%, transparent);
     border-radius: 0.7rem;
-    background: rgba(255, 255, 255, 0.08);
-    color: #ffffff;
+    background: color-mix(in srgb, var(--about-panel-text) 8%, transparent);
+    color: var(--about-panel-text);
     padding: 0.45rem 0.9rem;
     font: inherit;
     font-size: 0.95rem;
@@ -596,7 +602,7 @@ html:not([data-birthday-active="true"]) .fireworks-status {
 
 .copy-button:hover,
 .copy-button:focus-visible {
-    border-color: #d7a5ff;
+    border-color: var(--accent-color);
     transform: translateY(-1px);
 }
 
@@ -608,7 +614,14 @@ html:not([data-birthday-active="true"]) .fireworks-status {
 @media (max-width: 768px) {
     .home-about {
         flex-direction: column;
-        padding: 2rem 1rem;
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    .home-about article {
+        width: 100%;
+        min-height: 0;
+        padding: 1.25rem 1rem;
     }
 
     .home-about img {
@@ -622,7 +635,7 @@ html:not([data-birthday-active="true"]) .fireworks-status {
 
     .bank-detail-row {
         grid-template-columns: 1fr;
-        gap: 0.35rem;
+        gap: 0.25rem;
     }
 
     .account-number-wrap {
