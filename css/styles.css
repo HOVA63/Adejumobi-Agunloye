@@ -1048,3 +1048,25 @@ footer .limit {
         flex: 1 1 11rem;
     }
 }
+
+.about-hero-content .about-hero-lede {
+    font-size: clamp(1.2rem, 1.8vw, 1.55rem);
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+.about-hero-details {
+    display: grid;
+    gap: 0.8rem;
+    margin-top: 1.1rem;
+}
+
+.about-hero-content .about-hero-details > p {
+    margin: 0;
+    font-size: clamp(1rem, 1.2vw, 1.1rem);
+    line-height: 1.45;
+}
+
+.about-hero-content .home-hero-actions {
+    margin-top: 1.4rem;
+}
