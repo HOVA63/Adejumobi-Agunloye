@@ -145,24 +145,6 @@ if (copyButton) {
     });
 }
 
-async function loadItems() {
-    const container = document.getElementById("books");
-    if (!container) return;
-
-    const response = await fetch("books.json");
-    const items = await response.json();
-
-    container.innerHTML = items.map(item => `
-        <div class="img">
-            <a href="${item.link}" target="_blank" rel="noopener noreferrer">
-                <img src="${item.img}" alt="${item.title}">
-                <p>${item.title}</p>
-            </a>
-        </div>
-    `).join("");
-}
-loadItems();
-
 async function loadMediumArticles() {
     const container = document.querySelector("[data-medium-articles]");
     if (!container) return;
