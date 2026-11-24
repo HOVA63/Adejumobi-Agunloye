@@ -263,7 +263,7 @@ async function loadSubstackArticles() {
     const container = document.querySelector("[data-articles]");
     if (!container) return;
 
-    const archiveUrl = "https://r.jina.ai/https://adejumobiagunloye.substack.com/api/v1/archive?sort=new%26limit=50";
+    const archiveUrl = "/api/substack-articles";
 
     const fallbackImage = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 400'%3E%3Crect width='600' height='400' fill='%23e9e6df'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%235f5a53' font-family='sans-serif' font-size='28'%3ESubstack article%3C/text%3E%3C/svg%3E";
 
@@ -325,23 +325,18 @@ async function loadSubstackArticles() {
     };
 
     try {
-        const response = await fetch(archiveUrl);
+        const response = await fetch(archiveUrl, { cache: "no-cache" });
         if (!response.ok) throw new Error("The article feed could not be reached.");
 
-        const responseText = await response.text();
-        const contentMarker = "\nMarkdown Content:\n";
-        const contentStart = responseText.indexOf(contentMarker);
-        if (contentStart === -1) throw new Error("The article feed returned an invalid response.");
-
-        const articles = JSON.parse(responseText.slice(contentStart + contentMarker.length).trim());
-        if (!Array.isArray(articles)) {
+        const feed = await response.json();
+        if (feed.status !== "ok" || !Array.isArray(feed.items)) {
             throw new Error("The article feed returned an invalid response.");
         }
 
         const articleLimit = Number.parseInt(container.dataset.limit, 10);
         const items = Number.isInteger(articleLimit) && articleLimit > 0
-            ? articles.slice(0, articleLimit)
-            : articles;
+            ? feed.items.slice(0, articleLimit)
+            : feed.items;
         const cards = items.map(createArticleCard).filter(Boolean);
         container.setAttribute("aria-busy", "false");
         if (!cards.length) {
